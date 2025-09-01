@@ -1,0 +1,117 @@
+[tool.poetry]
+name = "open_clip_torch"
+version = "2.0.2"
+description = "OpenCLIP"
+authors = ["TinyCLIP Contributors"]
+readme = "README.md"
+license = "Apache-2.0"
+homepage = "https://github.com/mlfoundations/open_clip"
+repository = "https://github.com/mlfoundations/open_clip"
+keywords = ["CLIP", "pretrained", "vision", "language", "multimodal"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+packages = [{include = "open_clip", from = "src"}]
+include = ["src/open_clip/bpe_simple_vocab_16e6.txt.gz"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+torch = ">=1.9.0"
+torchvision = "*"
+ftfy = "*"
+regex = "*"
+tqdm = "*"
+huggingface_hub = "*"
+psutil = "*"
+# Training dependencies (optional)
+webdataset = {version = ">=0.2.5", optional = true}
+pandas = {version = "*", optional = true}
+braceexpand = {version = "*", optional = true}
+timm = {version = "0.4.12", optional = true}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.1"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.11.1"
+pytest-xdist = "^3.3.1"
+
+[tool.poetry.group.training.dependencies]
+webdataset = ">=0.2.5"
+pandas = "*"
+braceexpand = "*"
+timm = "0.4.12"
+
+[tool.poetry.extras]
+training = ["webdataset", "pandas", "braceexpand", "timm"]
+
+[tool.poetry.scripts]
+test = "pytest:main"
+tests = "pytest:main"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+    "--cov=src/open_clip",
+    "--cov-report=html:htmlcov",
+    "--cov-report=xml:coverage.xml",
+    "--cov-report=term-missing",
+    "--cov-fail-under=80",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "unit: marks tests as unit tests (fast, isolated)",
+    "integration: marks tests as integration tests (slower, may use external resources)",
+    "slow: marks tests as slow running",
+]
+
+[tool.coverage.run]
+source = ["src/open_clip"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__init__.py",
+    "*/conftest.py",
+    "*/setup.py",
+    "*/venv/*",
+    "*/.venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+show_missing = true
+precision = 2
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
